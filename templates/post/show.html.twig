@@ -1,0 +1,6 @@
+<!-- Affichage d'un article -->
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p>
+<p><small>Publié par : {{ post.User }}</small></p>
+<p><small>Publié le : {{ post.createdAt|date('Y-m-d H:i') }}</small></p>
+<p><a href="{{ path('app_post_index') }}">Retour à la liste</a></p>

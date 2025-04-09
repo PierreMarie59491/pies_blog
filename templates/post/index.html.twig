@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts{% endblock %}
+
+{% block body %}
+    <h1>Tous les posts</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+                <tr>
+                    <td>{{ post.title }}</td>
+                    <td>
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-primary">Voir</a>
+                    </td>
+                    <td>
+                        <!-- Afficher le bouton d'édition uniquement si l'utilisateur est l'auteur -->
+                        {% if app.user and post.user == app.user.pseudo %}
+                            <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-primary">Éditer</a>
+
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2">Aucun post trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_post_new') }}">Créer un nouvel article</a>
+{% endblock %}

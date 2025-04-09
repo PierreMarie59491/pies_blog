@@ -1,0 +1,18 @@
+{# templates/home/index.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page d'Accueil</title>
+</head>
+<body>
+    <h1>Bienvenue sur la page d'accueil !</h1>
+
+    {% if app.user %}
+        <p>Vous êtes connecté(e) avec l'email : {{ app.user.email }}</p>
+        <p>Pseudo : {{ app.user.pseudo }}</p>
+        <p><a href="{{ path('app_logout') }}">Se déconnecter</a></p>
+    {% else %}
+        <p>Vous n'êtes pas connecté(e).</p>
+    {% endif %}
+</body>
+</html>

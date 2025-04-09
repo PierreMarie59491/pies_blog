@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Éditer le post{% endblock %}
+
+{% block body %}
+    <h1>Édition de : {{ post.title }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.content) }}
+        <button class="btn btn-primary">Mettre à jour</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_post_index') }}">Retour à la liste</a>
+{% endblock %}

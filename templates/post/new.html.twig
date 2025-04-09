@@ -1,0 +1,19 @@
+{# templates/post/new.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouvel article{% endblock %}
+
+{% block body %}
+    <h1>Créer un nouvel article</h1>
+
+    {# Affichage du formulaire #}
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.content) }}
+        <button class="btn btn-primary">Publier</button>
+    {{ form_end(form) }}
+
+    {# Lien de retour à la liste des posts #}
+    <a href="{{ path('app_post_index') }}">Retour à la liste des articles</a>
+{% endblock %}
