@@ -22,11 +22,11 @@
                                 <span class="nav-link">Bienvenue {{ app.user.pseudo }}</span>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-primary animated fadeIn" href="{{ path('app_post_new') }}">Créer un nouvel article</a>
+                                <!-- <a class="btn btn-primary animated fadeIn" href="{{ path('app_post_new') }}">Créer un nouvel article</a> -->
 
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                                <a class="btn btn-danger btn-lg" href="{{ path('app_logout') }}">Déconnexion</a>
                             </li>
                         {% else %}
                             <li class="nav-item">

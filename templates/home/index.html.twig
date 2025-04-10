@@ -21,7 +21,9 @@
             <a href="{{ path('app_login') }}" class="btn btn-outline-secondary btn-lg me-2">Se connecter</a>
             <a href="{{ path('app_register') }}" class="btn btn-success btn-lg">Créer un compte</a>
         {% else %}
-            <a href="{{ path('app_logout') }}" class="btn btn-danger btn-lg">Se déconnecter</a>
+        <a class="btn btn-secondary btn-lg me-2" href="{{ path('app_post_new') }}">Créer un nouvel article</a>
+
+            <!-- <a href="{{ path('app_logout') }}" class="btn btn-danger btn-lg">Se déconnecter</a> -->
         {% endif %}
     </div>
     <h2 class="mt-5 mb-3">🆕 Derniers posts</h2>
