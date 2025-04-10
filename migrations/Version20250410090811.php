@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250409172448 extends AbstractMigration
+final class Version20250410090811 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,13 +21,13 @@ final class Version20250409172448 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE post CHANGE created_at created_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)', CHANGE user_pseudo user VARCHAR(255) NOT NULL
+            ALTER TABLE post ADD id INT AUTO_INCREMENT NOT NULL, CHANGE user title VARCHAR(255) NOT NULL, ADD PRIMARY KEY (id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON user (email)
+            ALTER TABLE post ADD CONSTRAINT FK_5A8A6C8DF675F31B FOREIGN KEY (author_id) REFERENCES user (id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE UNIQUE INDEX UNIQ_8D93D64986CC499D ON user (pseudo)
+            CREATE INDEX IDX_5A8A6C8DF675F31B ON post (author_id)
         SQL);
     }
 
@@ -35,13 +35,19 @@ final class Version20250409172448 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE post CHANGE created_at created_at DATETIME DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)', CHANGE user user_pseudo VARCHAR(255) NOT NULL
+            ALTER TABLE post MODIFY id INT NOT NULL
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX UNIQ_8D93D649E7927C74 ON user
+            ALTER TABLE post DROP FOREIGN KEY FK_5A8A6C8DF675F31B
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX UNIQ_8D93D64986CC499D ON user
+            DROP INDEX IDX_5A8A6C8DF675F31B ON post
+        SQL);
+        $this->addSql(<<<'SQL'
+            DROP INDEX `primary` ON post
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE post DROP id, CHANGE title user VARCHAR(255) NOT NULL
         SQL);
     }
 }

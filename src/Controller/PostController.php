@@ -8,47 +8,53 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/post')]
 class PostController extends AbstractController
 {
     // Affichage de la liste des posts
     #[Route('/', name: 'app_post_index', methods: ['GET'])]
-    public function index(PostRepository $postRepository): Response
+    public function index(Request $request, PostRepository $postRepository, PaginatorInterface $paginator): Response
     {
-        $posts = $postRepository->findAll();
-
+        $query = $postRepository->createQueryBuilder('p')
+            ->orderBy('p.createdAt', 'DESC')
+            ->getQuery();
+    
+        $posts = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
+    
         return $this->render('post/index.html.twig', [
             'posts' => $posts,
         ]);
     }
 
     // Création d'un nouveau post
-    #[Route('/new', name: 'app_post_new', methods: ['GET', 'POST'])]
+    #[Route('/post/new', name: 'app_post_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            // On associe l'utilisateur connecté comme auteur du post
-            $user = $this->getUser();
-            if ($user) {
-                // Utilisation de l'ID ou pseudo de l'utilisateur pour l'attribuer comme auteur
-                $post->setUser($user->getPseudo());  // Utiliser getPseudo() ou getId() selon ta préférence
-            }
-
+            // Définit l'auteur de l'article comme l'utilisateur actuellement connecté
+            $post->setAuthor($this->getUser()); // Utilise setAuthor() pour lier l'article à l'utilisateur connecté
+            $post->setCreatedAt(new \DateTimeImmutable());
+    
             $entityManager->persist($post);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_post_index');
         }
-
+    
         return $this->render('post/new.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -70,7 +76,7 @@ class PostController extends AbstractController
 public function edit(Request $request, Post $post, EntityManagerInterface $entityManager): Response
 {
     // Vérifier si l'utilisateur connecté est celui qui a créé le post ou un administrateur
-    if ($post->getUser() !== $this->getUser()->getPseudo() && !$this->isGranted('ROLE_ADMIN')) {
+    if ($post->getAuthor() !== $this->getUser()->getPseudo() && !$this->isGranted('ROLE_ADMIN')) {
         throw $this->createAccessDeniedException('Vous ne pouvez pas modifier ce post.');
     }
 

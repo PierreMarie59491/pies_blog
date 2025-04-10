@@ -1,18 +1,45 @@
-{# templates/home/index.html.twig #}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Page d'Accueil</title>
-</head>
-<body>
-    <h1>Bienvenue sur la page d'accueil !</h1>
+{% extends 'base.html.twig' %}
 
-    {% if app.user %}
-        <p>Vous êtes connecté(e) avec l'email : {{ app.user.email }}</p>
-        <p>Pseudo : {{ app.user.pseudo }}</p>
-        <p><a href="{{ path('app_logout') }}">Se déconnecter</a></p>
+{% block title %}Bienvenue{% endblock %}
+
+{% block body %}
+<div class="container text-center mt-5">
+    <h1 class="mb-4">Bienvenue{% if app.user %}, {{ app.user.pseudo }}{% endif %} !</h1>
+
+    <p class="lead">
+        {% if app.user %}
+            Prêt à explorer ou publier des articles ? 🚀
+        {% else %}
+            Connecte-toi ou crée un compte pour commencer !
+        {% endif %}
+    </p>
+
+    <div class="mt-4">
+        <a href="{{ path('app_post_index') }}" class="btn btn-primary btn-lg me-2">📚 Voir les posts</a>
+
+        {% if not app.user %}
+            <a href="{{ path('app_login') }}" class="btn btn-outline-secondary btn-lg me-2">Se connecter</a>
+            <a href="{{ path('app_register') }}" class="btn btn-success btn-lg">Créer un compte</a>
+        {% else %}
+            <a href="{{ path('app_logout') }}" class="btn btn-danger btn-lg">Se déconnecter</a>
+        {% endif %}
+    </div>
+    <h2 class="mt-5 mb-3">🆕 Derniers posts</h2>
+<div class="row">
+    {% for post in latest_posts %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.content[:100] ~ '...' }}</p>
+                    <a href="{{ path('app_post_show', {id: post.id}) }}" class="btn btn-sm btn-outline-primary">Lire</a>
+                </div>
+            </div>
+        </div>
     {% else %}
-        <p>Vous n'êtes pas connecté(e).</p>
-    {% endif %}
-</body>
-</html>
+        <p>Aucun post pour le moment.</p>
+    {% endfor %}
+</div>
+
+</div>
+{% endblock %}
